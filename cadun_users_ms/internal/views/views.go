@@ -3,7 +3,7 @@ package views
 import (
 	"context"
 
-	"github.com/Niser01/conectify/tree/main/conectify_users/conectify_users_ms/internal/models"
+	"github.com/Niser01/CADUN_Users/tree/main/cadun_users_ms/internal/models"
 	"github.com/jmoiron/sqlx"
 )
 

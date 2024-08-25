@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"CADUN_users\cadun_users_ms\settings"
+	"github.com/Niser01/CADUN_Users/tree/main/cadun_users_ms/settings"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 )

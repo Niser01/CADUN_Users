@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Niser01/conectify/tree/main/conectify_users/conectify_users_ms/internal/api/dtos"
-	"github.com/Niser01/conectify/tree/main/conectify_users/conectify_users_ms/internal/views"
+	"github.com/Niser01/CADUN_Users/tree/main/cadun_users_ms/internal/api/dtos"
+	"github.com/Niser01/CADUN_Users/tree/main/cadun_users_ms/internal/views"
 	"github.com/labstack/echo/v4"
 )
 
