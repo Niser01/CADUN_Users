@@ -1,23 +1,35 @@
 package models
 
-//user db model
-type User struct {
+// UserProfile db model
+type UserProfile struct {
 	ID          int    `db:"id"`
 	Names       string `db:"names"`
 	LastNames   string `db:"lastNames"`
-	PhotoId     string `db:"photoId"`
+	Alias       string `db:"alias"`
+	Password    string `db:"password"`
 	EMail       string `db:"eMail"`
-	Status      int    `db:"status"`
 	PhoneNumber string `db:"phoneNumber"`
-	SSO_UserId  string `db:"sso_userId"`
+	Country     string `db:"country"`
 }
 
-type UserId struct {
-	ID int `db:"id"`
+// RequestType db model
+type RequestType struct {
+	ID     int    `db:"id"`
+	Status string `db:"status"`
 }
 
-//saved db element model
-type SavedElement struct {
-	IDUser    int `db:"idUser"`
-	IDElement int `db:"idElement"`
+// Request db model
+type Request struct {
+	ID            int `db:"id"`
+	IDUser        int `db:"idUser"`
+	RequestStatus int `db:"request_status"`
+}
+
+// UsersElementsForQuotation db model
+type UsersElementsForQuotation struct {
+	ID          int    `db:"id"`
+	IDUser      int    `db:"idUser"`
+	IAMURL      string `db:"IAM_URL"`
+	PDFURL      string `db:"PDF_URL"`
+	QuotePDFURL string `db:"QUOTE_PDF_URL"`
 }

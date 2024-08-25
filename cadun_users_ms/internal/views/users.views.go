@@ -9,48 +9,49 @@ import (
 
 // querys for the database
 const (
-	queryCreateUser = `
-	INSERT INTO USERS_PROFILE (names, lastNames, photoId, eMail, status, phoneNumber, sso_userId) 
-	VALUES (?, ?, ?, ?, ?, ?, ?)`
-	queryread_userByid = `
+	queryCreate_User = `
+	INSERT INTO USERS_PROFILE (names, lastNames, alias, password, eMail, phoneNumber, country) 
+	VALUES (?, ?, ?, SHA2(?, 256), ?, ?, ?)`
+
+	queryread_user_Byid = `
 	SELECT *
 	FROM USERS_PROFILE 
 	WHERE id = ?`
-	queryread_userByemail = `
+
+	queryread_user_Byemail = `
 	SELECT *
 	FROM USERS_PROFILE 
 	WHERE eMail = ?`
+
 	querygetid_Byemail = `
 	SELECT id
 	from USERS_PROFILE 
 	WHERE eMail = ?`
-	queryread_userByname = `
-	SELECT *
-	FROM USERS_PROFILE 
-	WHERE names = ?`
-	queryread_userBylastname = `
-	SELECT *
-	FROM USERS_PROFILE 
-	WHERE lastNames = ?`
-	queryread_userBypnumber = `
-	SELECT *
-	FROM USERS_PROFILE 
-	WHERE phoneNumber = ?`
-	queryread_userBySSOID = `
-	SELECT id
-	FROM USERS_PROFILE 
-	WHERE sso_userId = ?`
-	queryupdate_photoId = `
-	UPDATE USERS_PROFILE 
-	SET photoId = ?
-	WHERE id = ?`
-	queryupdate_userByid = `
+
+	queryupdate_user_Byid = `
 	UPDATE USERS_PROFILE 
 	SET names = ?, lastNames = ?, photoId = ?, eMail = ?, status = ?, phoneNumber = ? , sso_userId = ?
 	WHERE id = ?`
-	querydelete_userByid = `
+
+	querydelete_user_Byid = `
 	DELETE FROM USERS_PROFILE 
 	WHERE id = ?`
+
+	queryget_request_status_Byid = `
+	SELECT request_status
+	from REQUEST 
+	WHERE id = ?`
+
+	queryget_request_status_ByUser = `
+	SELECT request_status
+	from REQUEST 
+	WHERE idUser = ?`
+
+	queryupdate_request_status_Byid = `
+	UPDATE REQUEST 
+	SET request_status = ?
+	WHERE id = ?`
+
 	queryedit_statusByid = `
 	UPDATE USERS_PROFILE 
 	SET status =  ?
@@ -59,13 +60,16 @@ const (
 	querycreate_savedElement = `
 	INSERT INTO USERS_SAVED_ELEMENTS (idUser, idElement)
 	VALUES (?, ?)`
+
 	queryread_savedElements = `
 	SELECT  idUser, idElement
 	FROM USERS_SAVED_ELEMENTS 
 	WHERE idUser = ?`
+
 	querydelete_savedElement = `
 	DELETE FROM USERS_SAVED_ELEMENTS 
 	WHERE idElement = ?`
+
 	querydelete_allsavedElements = `
 	DELETE FROM USERS_SAVED_ELEMENTS 
 	WHERE idUser = ?`
@@ -77,7 +81,7 @@ var (
 
 // Reads user from DB, since there can only be a unique email, the function is used first when creating a user it gets the system conext and gets the email
 func (r *View_struct) Read_userByemail(ctx context.Context, eMail string) (*models.User, error) {
-	u := &models.User{}
+	u := &models.UserProfile{}
 	err := r.db.GetContext(ctx, u, queryread_userByemail, eMail)
 	if err != nil {
 		return nil, err
@@ -101,7 +105,7 @@ func (r *View_struct) Create_user(ctx context.Context, names string, lastNames s
 
 // Reads the user info by their id
 func (r *View_struct) Read_userByid(ctx context.Context, id int) (*models.User, error) {
-	u := &models.User{}
+	u := &models.UserProfile{}
 	err := r.db.GetContext(ctx, u, queryread_userByid, id)
 	if err != nil {
 		return nil, err
