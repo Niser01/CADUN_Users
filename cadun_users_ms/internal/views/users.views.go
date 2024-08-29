@@ -74,7 +74,7 @@ var (
 )
 
 // Reads user from DB, since there can only be a unique email, the function is used first when creating a user it gets the system conext and gets the email
-func (r *View_struct) get_userid_Byemail(ctx context.Context, eMail string) (*models.UserId, error) {
+func (r *View_struct) Get_userid_Byemail(ctx context.Context, eMail string) (*models.UserId, error) {
 	u := &models.UserId{}
 	err := r.db.GetContext(ctx, u, queryget_userid_Byemail, eMail)
 	if err != nil {
@@ -85,7 +85,7 @@ func (r *View_struct) get_userid_Byemail(ctx context.Context, eMail string) (*mo
 
 // create_user creates a new user in the database, it uses the ExcecContext method
 func (r *View_struct) Create_user(ctx context.Context, names string, lastNames string, alias string, password string, eMail string, phoneNumber string, country string) error {
-	u, _ := r.get_userid_Byemail(ctx, eMail)
+	u, _ := r.Get_userid_Byemail(ctx, eMail)
 
 	if u != nil {
 		return ErrUserAlreadyExists
@@ -126,7 +126,7 @@ func (r *View_struct) Delete_userByid(ctx context.Context, id int) error {
 	return nil
 }
 
-func (r *View_struct) get_requeststatus_Byid(ctx context.Context, id int) (*models.Request_Status, error) {
+func (r *View_struct) Get_requeststatus_Byid(ctx context.Context, id int) (*models.Request_Status, error) {
 	u := &models.Request_Status{}
 	err := r.db.GetContext(ctx, u, queryget_requeststatus_Byid, id)
 	if err != nil {
@@ -135,7 +135,7 @@ func (r *View_struct) get_requeststatus_Byid(ctx context.Context, id int) (*mode
 	return u, nil
 }
 
-func (r *View_struct) get_requeststatus_ByUser(ctx context.Context, idUser int) (*models.Request_Status, error) {
+func (r *View_struct) Get_requeststatus_ByUser(ctx context.Context, idUser int) (*models.Request_Status, error) {
 	u := &models.Request_Status{}
 	err := r.db.GetContext(ctx, u, queryget_requeststatus_ByUser, idUser)
 	if err != nil {
@@ -145,7 +145,7 @@ func (r *View_struct) get_requeststatus_ByUser(ctx context.Context, idUser int) 
 }
 
 // This function edits the status of a user  it uses the ExcecContext method
-func (r *View_struct) update_requeststatus_Byid(ctx context.Context, status int, id int) error {
+func (r *View_struct) Update_requeststatus_Byid(ctx context.Context, status int, id int) error {
 	_, err := r.db.ExecContext(ctx, queryupdate_requeststatus_Byid, status, id)
 	if err != nil {
 		return err
@@ -153,7 +153,7 @@ func (r *View_struct) update_requeststatus_Byid(ctx context.Context, status int,
 	return nil
 }
 
-func (r *View_struct) delete_requests_ByUserid(ctx context.Context, idUser int) error {
+func (r *View_struct) Delete_requests_ByUserid(ctx context.Context, idUser int) error {
 	_, err := r.db.ExecContext(ctx, querydelete_requests_ByUserid, idUser)
 	if err != nil {
 		return err
@@ -161,7 +161,7 @@ func (r *View_struct) delete_requests_ByUserid(ctx context.Context, idUser int) 
 	return nil
 }
 
-func (r *View_struct) create_requesttype(ctx context.Context, Status string) error {
+func (r *View_struct) Create_requesttype(ctx context.Context, Status string) error {
 	_, err := r.db.ExecContext(ctx, querycreate_requesttype, Status)
 	if err != nil {
 		return err
@@ -169,7 +169,7 @@ func (r *View_struct) create_requesttype(ctx context.Context, Status string) err
 	return nil
 }
 
-func (r *View_struct) create_cotizacion(ctx context.Context, idUser int, idRequest int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string) error {
+func (r *View_struct) Create_cotizacion(ctx context.Context, idUser int, idRequest int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string) error {
 	_, err := r.db.ExecContext(ctx, querycreate_cotizacion, idUser, idRequest, IAM_URL, PDF_URL, QUOTE_PDF_URL)
 	if err != nil {
 		return err
@@ -177,7 +177,7 @@ func (r *View_struct) create_cotizacion(ctx context.Context, idUser int, idReque
 	return nil
 }
 
-func (r *View_struct) delete_cotizacion_ByUserid(ctx context.Context, idUser int) error {
+func (r *View_struct) Delete_cotizacion_ByUserid(ctx context.Context, idUser int) error {
 	_, err := r.db.ExecContext(ctx, querydelete_cotizacion_ByUserid, idUser)
 	if err != nil {
 		return err
@@ -185,7 +185,7 @@ func (r *View_struct) delete_cotizacion_ByUserid(ctx context.Context, idUser int
 	return nil
 }
 
-func (r *View_struct) get_cotizacion_ByRequest(ctx context.Context, idRequest int) (*models.UsersElementsForQuotation, error) {
+func (r *View_struct) Get_cotizacion_ByRequest(ctx context.Context, idRequest int) (*models.UsersElementsForQuotation, error) {
 	u := &models.UsersElementsForQuotation{}
 	err := r.db.GetContext(ctx, u, queryget_cotizacion_ByRequest, idRequest)
 	if err != nil {

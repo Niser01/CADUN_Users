@@ -5,7 +5,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// API is the API of the conectify_users_ms
 // It contains the view and the echo instance
 
 type API struct {
