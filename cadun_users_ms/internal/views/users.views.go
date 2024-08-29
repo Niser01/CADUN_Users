@@ -23,56 +23,55 @@ const (
 	FROM USERS_PROFILE 
 	WHERE eMail = ?`
 
-	querygetid_Byemail = `
+	queryget_userid_Byemail = `
 	SELECT id
 	from USERS_PROFILE 
 	WHERE eMail = ?`
 
 	queryupdate_user_Byid = `
 	UPDATE USERS_PROFILE 
-	SET names = ?, lastNames = ?, photoId = ?, eMail = ?, status = ?, phoneNumber = ? , sso_userId = ?
+	SET names = ?, lastNames = ?, alias = ?, password = ?, eMail = ?, phoneNumber = ?, country = ?
 	WHERE id = ?`
 
 	querydelete_user_Byid = `
 	DELETE FROM USERS_PROFILE 
 	WHERE id = ?`
 
-	queryget_request_status_Byid = `
+	queryget_requeststatus_Byid = `
 	SELECT request_status
 	from REQUEST 
 	WHERE id = ?`
 
-	queryget_request_status_ByUser = `
+	queryget_requeststatus_ByUser = `
 	SELECT request_status
 	from REQUEST 
 	WHERE idUser = ?`
 
-	queryupdate_request_status_Byid = `
+	queryupdate_requeststatus_Byid = `
 	UPDATE REQUEST 
 	SET request_status = ?
 	WHERE id = ?`
 
-	queryedit_statusByid = `
-	UPDATE USERS_PROFILE 
-	SET status =  ?
-	WHERE id = ?`
-
-	querycreate_savedElement = `
-	INSERT INTO USERS_SAVED_ELEMENTS (idUser, idElement)
-	VALUES (?, ?)`
-
-	queryread_savedElements = `
-	SELECT  idUser, idElement
-	FROM USERS_SAVED_ELEMENTS 
+	querydelete_requests_ByUserid = `
+	DELETE FROM REQUEST 
 	WHERE idUser = ?`
 
-	querydelete_savedElement = `
-	DELETE FROM USERS_SAVED_ELEMENTS 
-	WHERE idElement = ?`
+	querycreate_requesttype = `
+	INSERT INTO REQUEST_TYPES (Status)
+	VALUES (?)`
 
-	querydelete_allsavedElements = `
-	DELETE FROM USERS_SAVED_ELEMENTS 
+	querycreate_cotizacion = `
+	INSERT INTO USERS_PROFILE (idUser, idRequest, IAM_URL, PDF_URL, QUOTE_PDF_URL) 
+	VALUES (?, ?, ?, ?, ?)`
+
+	querydelete_cotizacion_ByUserid = `
+	DELETE FROM USERS_ELEMENTS_FOR_QUOTATION 
 	WHERE idUser = ?`
+
+	queryget_cotizacion_ByRequest = `
+	SELECT IAM_URL, PDF_URL, QUOTE_PDF_URL
+	FORM USERS_ELEMENTS_FOR_QUOTATION
+	WHERE idRequest = ?`
 )
 
 var (
