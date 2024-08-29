@@ -70,7 +70,7 @@ const (
 )
 
 var (
-	ErrUserAlreadyExists = errors.New("User already exists")
+	ErrUserAlreadyExists = errors.New("user already exists")
 )
 
 // Reads user from DB, since there can only be a unique email, the function is used first when creating a user it gets the system conext and gets the email
