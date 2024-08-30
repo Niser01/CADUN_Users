@@ -42,6 +42,11 @@ const (
 	from REQUEST 
 	WHERE id = ?`
 
+	queryget_requesttype_byrequestid = `
+	SELECT Status
+	FROM REQUEST_TYPES
+	WHERE id = ?`
+
 	queryget_requeststatus_ByUser = `
 	SELECT request_status
 	from REQUEST 
@@ -59,6 +64,10 @@ const (
 	querycreate_requesttype = `
 	INSERT INTO REQUEST_TYPES (Status)
 	VALUES (?)`
+
+	querycreate_request = `
+	INSERT INTO REQUEST (idUser, request_status)
+	VALUES (?, ?)`
 
 	querycreate_cotizacion = `
 	INSERT INTO USERS_PROFILE (idUser, idRequest, IAM_URL, PDF_URL, QUOTE_PDF_URL) 
@@ -150,6 +159,14 @@ func (r *View_struct) Get_requeststatus_Byid(ctx context.Context, id int) (*mode
 	return u, nil
 }
 
+func (r *View_struct) Update_requeststatus_Byid(ctx context.Context, status int, id int) error {
+	_, err := r.db.ExecContext(ctx, queryupdate_requeststatus_Byid, status, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *View_struct) Get_requeststatus_ByUser(ctx context.Context, idUser int) (*models.Request_Status, error) {
 	u := &models.Request_Status{}
 	err := r.db.GetContext(ctx, u, queryget_requeststatus_ByUser, idUser)
@@ -160,8 +177,8 @@ func (r *View_struct) Get_requeststatus_ByUser(ctx context.Context, idUser int) 
 }
 
 // This function edits the status of a user  it uses the ExcecContext method
-func (r *View_struct) Update_requeststatus_Byid(ctx context.Context, status int, id int) error {
-	_, err := r.db.ExecContext(ctx, queryupdate_requeststatus_Byid, status, id)
+func (r *View_struct) Create_request(ctx context.Context, idUser int, request_status int) error {
+	_, err := r.db.ExecContext(ctx, querycreate_request, idUser, request_status)
 	if err != nil {
 		return err
 	}

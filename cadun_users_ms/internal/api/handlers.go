@@ -125,6 +125,8 @@ func (a *API) Get_requeststatus_Byid(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
+
+	//estado, err := a.view.
 	return c.JSON(http.StatusOK, request)
 }
 
@@ -182,6 +184,21 @@ func (a *API) Create_requesttype(c echo.Context) error {
 	}
 
 	err = a.view.Create_requesttype(ctx, parametros.Status)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, nil)
+}
+
+func (a *API) Create_request(c echo.Context) error {
+	ctx := c.Request().Context()
+	parametros := dtos.Create_request{}
+	err := c.Bind(&parametros)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	err = a.view.Create_request(ctx, parametros.Id, parametros.RequestStatus)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

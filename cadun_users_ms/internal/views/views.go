@@ -20,6 +20,7 @@ type View_interface interface {
 	Update_requeststatus_Byid(ctx context.Context, status int, id int) error
 	Delete_requests_ByUserid(ctx context.Context, idUser int) error
 	Create_requesttype(ctx context.Context, Status string) error
+	Create_request(ctx context.Context, idUser int, request_status int) error
 	Create_cotizacion(ctx context.Context, idUser int, idRequest int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string) error
 	Delete_cotizacion_ByUserid(ctx context.Context, idUser int) error
 	Get_cotizacion_ByRequest(ctx context.Context, idRequest int) (*models.UsersElementsForQuotation, error)

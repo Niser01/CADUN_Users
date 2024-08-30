@@ -61,6 +61,11 @@ type Delete_requests_ByUserid struct {
 	Id int `json:"id" validate:"required"`
 }
 
+type Create_request struct {
+	Id            int `json:"idUser" validate:"required"`
+	RequestStatus int `json:"request_status" validate:"required"`
+}
+
 type Create_requesttype struct {
 	Status string `json:"Status" validate:"required"`
 }
