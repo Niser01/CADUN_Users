@@ -23,6 +23,11 @@ const (
 	from USERS_PROFILE 
 	WHERE eMail = ?`
 
+	queryget_password_Byemail = `
+	SELECT password
+	from USERS_PROFILE 
+	WHERE eMail = ?`
+
 	queryupdate_user_Byid = `
 	UPDATE USERS_PROFILE 
 	SET names = ?, lastNames = ?, alias = ?, password = ?, eMail = ?, phoneNumber = ?, country = ?
@@ -101,6 +106,16 @@ func (r *View_struct) Create_user(ctx context.Context, names string, lastNames s
 func (r *View_struct) Read_userByid(ctx context.Context, id int) (*models.UserProfile, error) {
 	u := &models.UserProfile{}
 	err := r.db.GetContext(ctx, u, queryread_user_Byid, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
+
+func (r *View_struct) Get_password_Byemail(ctx context.Context, eMail string) (*models.Password, error) {
+	u := &models.Password{}
+	err := r.db.GetContext(ctx, u, queryget_password_Byemail, eMail)
 	if err != nil {
 		return nil, err
 	}

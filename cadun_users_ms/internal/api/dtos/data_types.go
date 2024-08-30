@@ -16,6 +16,15 @@ type Get_userid_Byemail struct {
 	EMail string `json:"eMail" validate:"required ,min=8"`
 }
 
+type Get_password_Byemail struct {
+	EMail string `json:"eMail" validate:"required ,min=8"`
+}
+
+type RevisarPassword struct {
+	EMail    string `json:"eMail" validate:"required ,min=8"`
+	Password string `json:"password" validate:"required ,min=8"`
+}
+
 type Read_userByid struct {
 	Id int `json:"id" validate:"required"`
 }
@@ -41,4 +50,34 @@ type Get_requeststatus_Byid struct {
 
 type Get_requeststatus_ByUser struct {
 	Id int `json:"id" validate:"required"`
+}
+
+type Update_requeststatus_Byid struct {
+	Id            int `json:"id" validate:"required"`
+	RequestStatus int `json:"request_status" validate:"required"`
+}
+
+type Delete_requests_ByUserid struct {
+	Id int `json:"id" validate:"required"`
+}
+
+type Create_requesttype struct {
+	Status string `json:"Status" validate:"required"`
+}
+
+type Create_cotizacion struct {
+	ID          int    `json:"id" validate:"required"`
+	IDUser      int    `json:"idUser" validate:"required"`
+	IDRequest   int    `json:"idRequest" validate:"required"`
+	IAMURL      string `json:"IAM_URL" validate:"required"`
+	PDFURL      string `json:"PDF_URL" validate:"required"`
+	QuotePDFURL string `json:"QUOTE_PDF_URL" validate:"required"`
+}
+
+type Delete_cotizacion_ByUserid struct {
+	Id int `json:"id" validate:"required"`
+}
+
+type Get_cotizacion_ByRequest struct {
+	IDRequest int `json:"idRequest" validate:"required"`
 }

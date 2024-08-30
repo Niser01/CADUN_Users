@@ -12,6 +12,10 @@ type UserProfile struct {
 	Country     string `db:"country"`
 }
 
+type Password struct {
+	Password string `db:"password"`
+}
+
 type UserId struct {
 	ID int `db:"id"`
 }
@@ -33,16 +37,11 @@ type Request_Status struct {
 	RequestStatus int `db:"request_status"`
 }
 
-type get_Quotation struct {
-	IAMURL      string `db:"IAM_URL"`
-	PDFURL      string `db:"PDF_URL"`
-	QuotePDFURL string `db:"QUOTE_PDF_URL"`
-}
-
 // UsersElementsForQuotation db model
 type UsersElementsForQuotation struct {
 	ID          int    `db:"id"`
 	IDUser      int    `db:"idUser"`
+	IDRequest   int    `db:"idRequest"`
 	IAMURL      string `db:"IAM_URL"`
 	PDFURL      string `db:"PDF_URL"`
 	QuotePDFURL string `db:"QUOTE_PDF_URL"`

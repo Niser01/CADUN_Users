@@ -12,6 +12,7 @@ type View_interface interface {
 	Get_userid_Byemail(ctx context.Context, eMail string) (*models.UserId, error)
 	Create_user(ctx context.Context, names string, lastNames string, alias string, password string, eMail string, phoneNumber string, country string) error
 	Read_userByid(ctx context.Context, id int) (*models.UserProfile, error)
+	Get_password_Byemail(ctx context.Context, eMail string) (*models.Password, error)
 	Update_userByid(ctx context.Context, names string, lastNames string, alias string, password string, eMail string, phoneNumber string, country string, id int) error
 	Delete_userByid(ctx context.Context, id int) error
 	Get_requeststatus_Byid(ctx context.Context, id int) (*models.Request_Status, error)
