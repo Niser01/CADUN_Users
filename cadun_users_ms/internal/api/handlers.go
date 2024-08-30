@@ -1,12 +1,13 @@
 package api
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"net/http"
 
 	"github.com/Niser01/CADUN_Users/tree/main/cadun_users_ms/internal/api/dtos"
 	"github.com/Niser01/CADUN_Users/tree/main/cadun_users_ms/internal/views"
 	"github.com/labstack/echo/v4"
-	"golang.org/x/crypto/bcrypt"
 )
 
 //Handlers for the API
@@ -232,9 +233,15 @@ func (a *API) Get_cotizacion_ByRequest(c echo.Context) error {
 	return c.JSON(http.StatusOK, cotizacion)
 }
 
-func checkPassword(providedPassword string, storedPassword string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(providedPassword))
-	return err == nil
+func checkPassword(providedPassword, storedPassword string) bool {
+	hash := sha256.New()
+	hash.Write([]byte(providedPassword))
+	hashedText := hash.Sum(nil)
+
+	// Convertir el hash a una cadena hexadecimal
+	hashedTextHex := hex.EncodeToString(hashedText)
+
+	return hashedTextHex == storedPassword
 }
 
 func (a *API) RevisarPassword(c echo.Context) error {
@@ -242,10 +249,6 @@ func (a *API) RevisarPassword(c echo.Context) error {
 	parametros := dtos.RevisarPassword{}
 	err := c.Bind(&parametros)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-
-	if err := c.Validate(&parametros); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
@@ -258,7 +261,7 @@ func (a *API) RevisarPassword(c echo.Context) error {
 	isValid := checkPassword(parametros.Password, storedPassword.Password)
 	if !isValid {
 		// Si la contraseña no coincide, devolver un error 401 (Unauthorized)
-		return c.JSON(http.StatusUnauthorized, "Invalid password")
+		return c.JSON(http.StatusUnauthorized, "Incorrect Password")
 	}
 
 	// 6. Si la contraseña es correcta, devolver una respuesta exitosa
