@@ -37,6 +37,10 @@ type Request_Status struct {
 	RequestStatus int `db:"request_status"`
 }
 
+type Status struct {
+	Status string `db:"Status"`
+}
+
 // UsersElementsForQuotation db model
 type UsersElementsForQuotation struct {
 	ID          int    `db:"id"`

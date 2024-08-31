@@ -17,6 +17,7 @@ type View_interface interface {
 	Delete_userByid(ctx context.Context, id int) error
 	Get_requeststatus_Byid(ctx context.Context, id int) (*models.Request_Status, error)
 	Get_requeststatus_ByUser(ctx context.Context, idUser int) (*models.Request_Status, error)
+	Get_status_byid(ctx context.Context, id int) (*models.Status, error)
 	Update_requeststatus_Byid(ctx context.Context, status int, id int) error
 	Delete_requests_ByUserid(ctx context.Context, idUser int) error
 	Create_requesttype(ctx context.Context, Status string) error

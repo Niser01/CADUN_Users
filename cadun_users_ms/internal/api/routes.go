@@ -19,8 +19,7 @@ func (a *API) RegisterRoutes(e *echo.Echo) {
 	request.POST("/create_request", a.Create_request)
 	request.POST("/create_tipo_de_request", a.Create_requesttype)
 	request.GET("/request_status_byid", a.Get_requeststatus_Byid)
-	request.GET("/request_status_byUser", a.Get_requeststatus_ByUser)
-	request.PUT("/request_status_byrequestid", a.Update_requeststatus_Byid)
+	request.PUT("/update_requeststatus_Byid", a.Update_requeststatus_Byid)
 	request.DELETE("/delete_requests_byuserid", a.Delete_requests_ByUserid)
 
 	cotizacion := e.Group("/cotizacion")

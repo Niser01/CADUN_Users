@@ -42,7 +42,7 @@ const (
 	from REQUEST 
 	WHERE id = ?`
 
-	queryget_requesttype_byrequestid = `
+	queryget_status_byid = `
 	SELECT Status
 	FROM REQUEST_TYPES
 	WHERE id = ?`
@@ -125,6 +125,16 @@ func (r *View_struct) Read_userByid(ctx context.Context, id int) (*models.UserPr
 func (r *View_struct) Get_password_Byemail(ctx context.Context, eMail string) (*models.Password, error) {
 	u := &models.Password{}
 	err := r.db.GetContext(ctx, u, queryget_password_Byemail, eMail)
+	if err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
+
+func (r *View_struct) Get_status_byid(ctx context.Context, id int) (*models.Status, error) {
+	u := &models.Status{}
+	err := r.db.GetContext(ctx, u, queryget_status_byid, id)
 	if err != nil {
 		return nil, err
 	}

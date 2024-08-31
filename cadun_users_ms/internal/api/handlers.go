@@ -126,8 +126,11 @@ func (a *API) Get_requeststatus_Byid(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
-	//estado, err := a.view.
-	return c.JSON(http.StatusOK, request)
+	estado, err := a.view.Get_status_byid(ctx, request.RequestStatus)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, estado)
 }
 
 func (a *API) Get_requeststatus_ByUser(c echo.Context) error {
@@ -142,7 +145,12 @@ func (a *API) Get_requeststatus_ByUser(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
-	return c.JSON(http.StatusOK, request)
+
+	estado, err := a.view.Get_status_byid(ctx, request.RequestStatus)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, estado)
 }
 
 func (a *API) Update_requeststatus_Byid(c echo.Context) error {
