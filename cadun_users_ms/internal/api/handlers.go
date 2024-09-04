@@ -25,7 +25,7 @@ func (a *API) Create_User(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Create_user(ctx, parametros.Names, parametros.LastNames, parametros.Alias, parametros.Password, parametros.EMail, parametros.PhoneNumber, parametros.Country)
+	err = a.view.Create_user(ctx, parametros.Names, parametros.LastNames, parametros.Alias, parametros.Password, parametros.EMail, parametros.PhoneNumber, parametros.Country, parametros.Home_address)
 	if err != nil {
 		if err == views.ErrUserAlreadyExists {
 			return c.JSON(http.StatusConflict, err)
@@ -91,7 +91,7 @@ func (a *API) Update_userByid(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Update_userByid(ctx, parametros.Names, parametros.LastNames, parametros.Alias, parametros.Password, parametros.EMail, parametros.PhoneNumber, parametros.Country, parametros.Id)
+	err = a.view.Update_userByid(ctx, parametros.Names, parametros.LastNames, parametros.Alias, parametros.Password, parametros.EMail, parametros.PhoneNumber, parametros.Country, parametros.Home_address, parametros.Id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -121,7 +121,7 @@ func (a *API) Get_requeststatus_Byid(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	request, err := a.view.Get_requeststatus_Byid(ctx, parametros.Id)
+	request, err := a.view.Get_request_status_Byid(ctx, parametros.Id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -133,27 +133,7 @@ func (a *API) Get_requeststatus_Byid(c echo.Context) error {
 	return c.JSON(http.StatusOK, estado)
 }
 
-func (a *API) Get_requeststatus_ByUser(c echo.Context) error {
-	ctx := c.Request().Context()
-	parametros := dtos.Get_requeststatus_ByUser{}
-	err := c.Bind(&parametros)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-
-	request, err := a.view.Get_requeststatus_ByUser(ctx, parametros.Id)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-
-	estado, err := a.view.Get_status_byid(ctx, request.RequestStatus)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-	return c.JSON(http.StatusOK, estado)
-}
-
-func (a *API) Update_requeststatus_Byid(c echo.Context) error {
+func (a *API) Update_request_status_Byid(c echo.Context) error {
 	ctx := c.Request().Context()
 	parametros := dtos.Update_requeststatus_Byid{}
 	err := c.Bind(&parametros)
@@ -161,7 +141,7 @@ func (a *API) Update_requeststatus_Byid(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Update_requeststatus_Byid(ctx, parametros.RequestStatus, parametros.Id)
+	err = a.view.Update_request_status_Byid(ctx, parametros.RequestStatus, parametros.Id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -206,56 +186,11 @@ func (a *API) Create_request(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Create_request(ctx, parametros.Id, parametros.RequestStatus)
+	err = a.view.Create_request(ctx, parametros.Id, parametros.RequestStatus, parametros.IAM_URL, parametros.PDF_URL, parametros.QUOTE_PDF_URL)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, nil)
-}
-
-func (a *API) Create_cotizacion(c echo.Context) error {
-	ctx := c.Request().Context()
-	parametros := dtos.Create_cotizacion{}
-	err := c.Bind(&parametros)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-
-	err = a.view.Create_cotizacion(ctx, parametros.IDUser, parametros.IDRequest, parametros.IAMURL, parametros.PDFURL, parametros.QuotePDFURL)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-	return c.JSON(http.StatusOK, nil)
-}
-
-func (a *API) Delete_cotizacion_ByUserid(c echo.Context) error {
-	ctx := c.Request().Context()
-	parametros := dtos.Delete_cotizacion_ByUserid{}
-	err := c.Bind(&parametros)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-
-	err = a.view.Delete_cotizacion_ByUserid(ctx, parametros.Id)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-	return c.JSON(http.StatusOK, nil)
-}
-
-func (a *API) Get_cotizacion_ByRequest(c echo.Context) error {
-	ctx := c.Request().Context()
-	parametros := dtos.Get_cotizacion_ByRequest{}
-	err := c.Bind(&parametros)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-
-	cotizacion, err := a.view.Get_cotizacion_ByRequest(ctx, parametros.IDRequest)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-	return c.JSON(http.StatusOK, cotizacion)
 }
 
 func checkPassword(providedPassword, storedPassword string) bool {
@@ -263,7 +198,6 @@ func checkPassword(providedPassword, storedPassword string) bool {
 	hash.Write([]byte(providedPassword))
 	hashedText := hash.Sum(nil)
 
-	// Convertir el hash a una cadena hexadecimal
 	hashedTextHex := hex.EncodeToString(hashedText)
 
 	return hashedTextHex == storedPassword
@@ -279,16 +213,29 @@ func (a *API) RevisarPassword(c echo.Context) error {
 
 	storedPassword, error_Pass_almacenado := a.view.Get_password_Byemail(ctx, parametros.EMail)
 	if error_Pass_almacenado != nil {
-		// Si hay un error al obtener la contraseña, devolver un error 500
+
 		return c.JSON(http.StatusInternalServerError, error_Pass_almacenado)
 	}
 
 	isValid := checkPassword(parametros.Password, storedPassword.Password)
 	if !isValid {
-		// Si la contraseña no coincide, devolver un error 401 (Unauthorized)
+
 		return c.JSON(http.StatusUnauthorized, "Incorrect Password")
 	}
 
-	// 6. Si la contraseña es correcta, devolver una respuesta exitosa
 	return c.JSON(http.StatusOK, "Password is correct")
+}
+
+func (a *API) Get_cotizacion_data(c echo.Context) error {
+	ctx := c.Request().Context()
+	parametros := dtos.Get_cotizacion{}
+	err := c.Bind(&parametros)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	cotizacion, err := a.view.Get_cotizacion_data(ctx, parametros.Id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, cotizacion)
 }

@@ -10,8 +10,8 @@ import (
 // querys for the database
 const (
 	queryCreate_User = `
-	INSERT INTO USERS_PROFILE (names, lastNames, alias, password, eMail, phoneNumber, country) 
-	VALUES (?, ?, ?, SHA2(?, 256), ?, ?, ?)`
+	INSERT INTO USERS_PROFILE (names, lastNames, alias, password, eMail, phoneNumber, country, home_address) 
+	VALUES (?, ?, ?, SHA2(?, 256), ?, ?, ?, ?)`
 
 	queryread_user_Byid = `
 	SELECT *
@@ -30,14 +30,14 @@ const (
 
 	queryupdate_user_Byid = `
 	UPDATE USERS_PROFILE 
-	SET names = ?, lastNames = ?, alias = ?, password = ?, eMail = ?, phoneNumber = ?, country = ?
+	SET names = ?, lastNames = ?, alias = ?, password = ?, eMail = ?, phoneNumber = ?, country = ?, home_address = ?
 	WHERE id = ?`
 
 	querydelete_user_Byid = `
 	DELETE FROM USERS_PROFILE 
 	WHERE id = ?`
 
-	queryget_requeststatus_Byid = `
+	queryget_request_status_Byid = `
 	SELECT request_status
 	from REQUEST 
 	WHERE id = ?`
@@ -47,12 +47,7 @@ const (
 	FROM REQUEST_TYPES
 	WHERE id = ?`
 
-	queryget_requeststatus_ByUser = `
-	SELECT request_status
-	from REQUEST 
-	WHERE idUser = ?`
-
-	queryupdate_requeststatus_Byid = `
+	queryupdate_request_status_Byid = `
 	UPDATE REQUEST 
 	SET request_status = ?
 	WHERE id = ?`
@@ -61,26 +56,32 @@ const (
 	DELETE FROM REQUEST 
 	WHERE idUser = ?`
 
+	querycreate_request = `
+	INSERT INTO REQUEST (idUser, request_status, IAM_URL, PDF_URL, QUOTE_PDF_URL)
+	VALUES (?, 5, ?, ?, ?)`
+
 	querycreate_requesttype = `
 	INSERT INTO REQUEST_TYPES (Status)
 	VALUES (?)`
 
-	querycreate_request = `
-	INSERT INTO REQUEST (idUser, request_status)
-	VALUES (?, ?)`
-
-	querycreate_cotizacion = `
-	INSERT INTO USERS_PROFILE (idUser, idRequest, IAM_URL, PDF_URL, QUOTE_PDF_URL) 
-	VALUES (?, ?, ?, ?, ?)`
-
-	querydelete_cotizacion_ByUserid = `
-	DELETE FROM USERS_ELEMENTS_FOR_QUOTATION 
-	WHERE idUser = ?`
-
-	queryget_cotizacion_ByRequest = `
-	SELECT IAM_URL, PDF_URL, QUOTE_PDF_URL
-	FORM USERS_ELEMENTS_FOR_QUOTATION
-	WHERE idRequest = ?`
+	queryget_cotizacion_data = `
+	SELECT 
+		u.names,
+		u.lastNames,
+		u.eMail,
+		u.phoneNumber,
+		u.home_address,
+		r.IAM_URL,
+		r.PDF_URL,
+		r.QUOTE_PDF_URL
+	FROM 
+		REQUEST r
+	JOIN 
+		USERS_PROFILE u
+	ON 
+		r.idUser = u.id
+	WHERE 
+		r.id = ?;`
 )
 
 var (
@@ -98,13 +99,13 @@ func (r *View_struct) Get_userid_Byemail(ctx context.Context, eMail string) (*mo
 }
 
 // create_user creates a new user in the database, it uses the ExcecContext method
-func (r *View_struct) Create_user(ctx context.Context, names string, lastNames string, alias string, password string, eMail string, phoneNumber string, country string) error {
+func (r *View_struct) Create_user(ctx context.Context, names string, lastNames string, alias string, password string, eMail string, phoneNumber string, country string, home_address string) error {
 	u, _ := r.Get_userid_Byemail(ctx, eMail)
 
 	if u != nil {
 		return ErrUserAlreadyExists
 	}
-	_, err := r.db.ExecContext(ctx, queryCreate_User, names, lastNames, alias, password, eMail, phoneNumber, country)
+	_, err := r.db.ExecContext(ctx, queryCreate_User, names, lastNames, alias, password, eMail, phoneNumber, country, home_address)
 	if err != nil {
 		return err
 	}
@@ -143,8 +144,8 @@ func (r *View_struct) Get_status_byid(ctx context.Context, id int) (*models.Stat
 }
 
 // This function updates the user information, the user is selected by it´s id,  it uses the ExcecContext method
-func (r *View_struct) Update_userByid(ctx context.Context, names string, lastNames string, alias string, password string, eMail string, phoneNumber string, country string, id int) error {
-	_, err := r.db.ExecContext(ctx, queryupdate_user_Byid, names, lastNames, alias, password, eMail, phoneNumber, country, id)
+func (r *View_struct) Update_userByid(ctx context.Context, names string, lastNames string, alias string, password string, eMail string, phoneNumber string, country string, home_address string, id int) error {
+	_, err := r.db.ExecContext(ctx, queryupdate_user_Byid, names, lastNames, alias, password, eMail, phoneNumber, country, home_address, id)
 	if err != nil {
 		return err
 	}
@@ -160,35 +161,9 @@ func (r *View_struct) Delete_userByid(ctx context.Context, id int) error {
 	return nil
 }
 
-func (r *View_struct) Get_requeststatus_Byid(ctx context.Context, id int) (*models.Request_Status, error) {
-	u := &models.Request_Status{}
-	err := r.db.GetContext(ctx, u, queryget_requeststatus_Byid, id)
-	if err != nil {
-		return nil, err
-	}
-	return u, nil
-}
-
-func (r *View_struct) Update_requeststatus_Byid(ctx context.Context, status int, id int) error {
-	_, err := r.db.ExecContext(ctx, queryupdate_requeststatus_Byid, status, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *View_struct) Get_requeststatus_ByUser(ctx context.Context, idUser int) (*models.Request_Status, error) {
-	u := &models.Request_Status{}
-	err := r.db.GetContext(ctx, u, queryget_requeststatus_ByUser, idUser)
-	if err != nil {
-		return nil, err
-	}
-	return u, nil
-}
-
 // This function edits the status of a user  it uses the ExcecContext method
-func (r *View_struct) Create_request(ctx context.Context, idUser int, request_status int) error {
-	_, err := r.db.ExecContext(ctx, querycreate_request, idUser, request_status)
+func (r *View_struct) Create_request(ctx context.Context, idUser int, request_status int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string) error {
+	_, err := r.db.ExecContext(ctx, querycreate_request, idUser, request_status, IAM_URL, PDF_URL, QUOTE_PDF_URL)
 	if err != nil {
 		return err
 	}
@@ -211,27 +186,30 @@ func (r *View_struct) Create_requesttype(ctx context.Context, Status string) err
 	return nil
 }
 
-func (r *View_struct) Create_cotizacion(ctx context.Context, idUser int, idRequest int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string) error {
-	_, err := r.db.ExecContext(ctx, querycreate_cotizacion, idUser, idRequest, IAM_URL, PDF_URL, QUOTE_PDF_URL)
+func (r *View_struct) Update_request_status_Byid(ctx context.Context, id int, request_status int) error {
+	_, err := r.db.ExecContext(ctx, queryupdate_request_status_Byid, request_status, id) // Cambié el orden aquí
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *View_struct) Delete_cotizacion_ByUserid(ctx context.Context, idUser int) error {
-	_, err := r.db.ExecContext(ctx, querydelete_cotizacion_ByUserid, idUser)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *View_struct) Get_cotizacion_ByRequest(ctx context.Context, idRequest int) (*models.UsersElementsForQuotation, error) {
-	u := &models.UsersElementsForQuotation{}
-	err := r.db.GetContext(ctx, u, queryget_cotizacion_ByRequest, idRequest)
+func (r *View_struct) Get_request_status_Byid(ctx context.Context, id int) (*models.Request_Status, error) {
+	u := &models.Request_Status{}
+	err := r.db.GetContext(ctx, u, queryget_request_status_Byid, id)
 	if err != nil {
 		return nil, err
 	}
+
+	return u, nil
+}
+
+func (r *View_struct) Get_cotizacion_data(ctx context.Context, id_request int) (*models.Get_cotizacion_data, error) {
+	u := &models.Get_cotizacion_data{}
+	err := r.db.GetContext(ctx, u, queryget_cotizacion_data, id_request)
+	if err != nil {
+		return nil, err
+	}
+
 	return u, nil
 }

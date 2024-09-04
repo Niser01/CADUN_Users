@@ -2,14 +2,15 @@ package models
 
 // UserProfile db model
 type UserProfile struct {
-	ID          int    `db:"id"`
-	Names       string `db:"names"`
-	LastNames   string `db:"lastNames"`
-	Alias       string `db:"alias"`
-	Password    string `db:"password"`
-	EMail       string `db:"eMail"`
-	PhoneNumber string `db:"phoneNumber"`
-	Country     string `db:"country"`
+	ID           int    `db:"id"`
+	Names        string `db:"names"`
+	LastNames    string `db:"lastNames"`
+	Alias        string `db:"alias"`
+	Password     string `db:"password"`
+	EMail        string `db:"eMail"`
+	PhoneNumber  string `db:"phoneNumber"`
+	Country      string `db:"country"`
+	Home_address string `db:"home_address"`
 }
 
 type Password struct {
@@ -41,12 +42,13 @@ type Status struct {
 	Status string `db:"Status"`
 }
 
-// UsersElementsForQuotation db model
-type UsersElementsForQuotation struct {
-	ID          int    `db:"id"`
-	IDUser      int    `db:"idUser"`
-	IDRequest   int    `db:"idRequest"`
-	IAMURL      string `db:"IAM_URL"`
-	PDFURL      string `db:"PDF_URL"`
-	QuotePDFURL string `db:"QUOTE_PDF_URL"`
+type Get_cotizacion_data struct {
+	Names         string `db:"names"`
+	LastNames     string `db:"lastNames"`
+	EMail         string `db:"eMail"`
+	PhoneNumber   string `db:"phoneNumber"`
+	Home_address  string `db:"home_address"`
+	IAM_URL       string `db:"IAM_URL"`
+	PDF_URL       string `db:"PDF_URL"`
+	QUOTE_PDF_URL string `db:"QUOTE_PDF_URL"`
 }
