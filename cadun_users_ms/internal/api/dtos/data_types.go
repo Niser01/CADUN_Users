@@ -1,7 +1,5 @@
 package dtos
 
-//dtos stands for data transfer objects and are used to transfer data between the client and the server
-
 type Create_User struct {
 	Names        string `json:"names"  validate:"required" `
 	LastNames    string `json:"lastNames" validate:"required"`
@@ -64,24 +62,19 @@ type Delete_requests_ByUserid struct {
 }
 
 type Create_request struct {
-	Id            int    `json:"idUser" validate:"required"`
-	RequestStatus int    `json:"request_status" validate:"required"`
-	IAM_URL       string `json:"IAM_URL"`
-	PDF_URL       string `json:"PDF_URL"`
-	QUOTE_PDF_URL string `json:"QUOTE_PDF_URL"`
+	Id int `json:"idUser" validate:"required"`
 }
 
 type Create_requesttype struct {
 	Status string `json:"Status" validate:"required"`
 }
 
-type Create_cotizacion struct {
-	ID          int    `json:"id" validate:"required"`
-	IDUser      int    `json:"idUser" validate:"required"`
-	IDRequest   int    `json:"idRequest" validate:"required"`
-	IAMURL      string `json:"IAM_URL" validate:"required"`
-	PDFURL      string `json:"PDF_URL" validate:"required"`
-	QuotePDFURL string `json:"QUOTE_PDF_URL" validate:"required"`
+type Update_cotizacion struct {
+	Id            int    `json:"idUser" validate:"required"`
+	RequestStatus int    `json:"request_status" validate:"required"`
+	IAM_URL       string `json:"IAM_URL"`
+	PDF_URL       string `json:"PDF_URL"`
+	QUOTE_PDF_URL string `json:"QUOTE_PDF_URL"`
 }
 
 type Delete_cotizacion_ByUserid struct {
@@ -90,17 +83,6 @@ type Delete_cotizacion_ByUserid struct {
 
 type Get_cotizacion_ByRequest struct {
 	IDRequest int `json:"idRequest" validate:"required"`
-}
-
-type Get_cotizacion_data struct {
-	Names         string `json:"names"`
-	LastNames     string `json:"lastNames"`
-	EMail         string `json:"eMail"`
-	PhoneNumber   string `json:"phoneNumber"`
-	Home_address  string `json:"home_address"`
-	IAM_URL       string `json:"IAM_URL"`
-	PDF_URL       string `json:"PDF_URL"`
-	QUOTE_PDF_URL string `json:"QUOTE_PDF_URL"`
 }
 
 type Get_cotizacion struct {

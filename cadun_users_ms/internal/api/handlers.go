@@ -3,6 +3,7 @@ package api
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"net/http"
 
 	"github.com/Niser01/CADUN_Users/tree/main/cadun_users_ms/internal/api/dtos"
@@ -186,7 +187,22 @@ func (a *API) Create_request(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Create_request(ctx, parametros.Id, parametros.RequestStatus, parametros.IAM_URL, parametros.PDF_URL, parametros.QUOTE_PDF_URL)
+	err = a.view.Create_request(ctx, parametros.Id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, nil)
+}
+
+func (a *API) Update_request_URL(c echo.Context) error {
+	ctx := c.Request().Context()
+	parametros := dtos.Update_cotizacion{}
+	err := c.Bind(&parametros)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	err = a.view.Update_request_URL(ctx, parametros.RequestStatus, parametros.IAM_URL, parametros.PDF_URL, parametros.QUOTE_PDF_URL, parametros.Id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -235,7 +251,8 @@ func (a *API) Get_cotizacion_data(c echo.Context) error {
 	}
 	cotizacion, err := a.view.Get_cotizacion_data(ctx, parametros.Id)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		fmt.Println("Error fetching cotizacion data:", err.Error())
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch cotizacion data"})
 	}
 	return c.JSON(http.StatusOK, cotizacion)
 }

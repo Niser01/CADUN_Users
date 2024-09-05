@@ -4,11 +4,11 @@ package models
 type UserProfile struct {
 	ID           int    `db:"id"`
 	Names        string `db:"names"`
-	LastNames    string `db:"lastNames"`
+	LastNames    string `db:"lastnames"`
 	Alias        string `db:"alias"`
 	Password     string `db:"password"`
-	EMail        string `db:"eMail"`
-	PhoneNumber  string `db:"phoneNumber"`
+	EMail        string `db:"email"`
+	PhoneNumber  string `db:"phonenumber"`
 	Country      string `db:"country"`
 	Home_address string `db:"home_address"`
 }
@@ -44,11 +44,11 @@ type Status struct {
 
 type Get_cotizacion_data struct {
 	Names         string `db:"names"`
-	LastNames     string `db:"lastNames"`
-	EMail         string `db:"eMail"`
-	PhoneNumber   string `db:"phoneNumber"`
+	LastNames     string `db:"lastnames"`
+	EMail         string `db:"email"`
+	PhoneNumber   string `db:"phonenumber"`
 	Home_address  string `db:"home_address"`
-	IAM_URL       string `db:"IAM_URL"`
-	PDF_URL       string `db:"PDF_URL"`
-	QUOTE_PDF_URL string `db:"QUOTE_PDF_URL"`
+	IAM_URL       string `db:"iam_url"`
+	PDF_URL       string `db:"pdf_url"`
+	QUOTE_PDF_URL string `db:"quote_pdf_url"`
 }

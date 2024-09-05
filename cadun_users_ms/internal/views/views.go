@@ -16,10 +16,11 @@ type View_interface interface {
 	Get_status_byid(ctx context.Context, id int) (*models.Status, error)
 	Update_userByid(ctx context.Context, names string, lastNames string, alias string, password string, eMail string, phoneNumber string, country string, home_address string, id int) error
 	Delete_userByid(ctx context.Context, id int) error
-	Create_request(ctx context.Context, idUser int, request_status int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string) error
+	Create_request(ctx context.Context, idUser int) error
 	Delete_requests_ByUserid(ctx context.Context, idUser int) error
 	Update_request_status_Byid(ctx context.Context, id int, request_status int) error
 	Create_requesttype(ctx context.Context, Status string) error
+	Update_request_URL(ctx context.Context, request_status int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string, id int) error
 	Get_request_status_Byid(ctx context.Context, id int) (*models.Request_Status, error)
 	Get_cotizacion_data(ctx context.Context, id_request int) (*models.Get_cotizacion_data, error)
 }

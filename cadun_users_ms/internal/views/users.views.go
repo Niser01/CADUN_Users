@@ -3,6 +3,7 @@ package views
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/Niser01/CADUN_Users/tree/main/cadun_users_ms/internal/models"
 )
@@ -11,58 +12,63 @@ import (
 const (
 	queryCreate_User = `
 	INSERT INTO USERS_PROFILE (names, lastNames, alias, password, eMail, phoneNumber, country, home_address) 
-	VALUES (?, ?, ?, SHA2(?, 256), ?, ?, ?, ?)`
+	VALUES ($1, $2, $3, encode(digest($4, 'sha256'), 'hex'), $5, $6, $7, $8)`
 
 	queryread_user_Byid = `
 	SELECT *
 	FROM USERS_PROFILE 
-	WHERE id = ?`
+	WHERE id = $1`
 
 	queryget_userid_Byemail = `
 	SELECT id
-	from USERS_PROFILE 
-	WHERE eMail = ?`
+	FROM USERS_PROFILE 
+	WHERE eMail = $1`
 
 	queryget_password_Byemail = `
 	SELECT password
-	from USERS_PROFILE 
-	WHERE eMail = ?`
+	FROM USERS_PROFILE 
+	WHERE eMail = $1`
 
 	queryupdate_user_Byid = `
 	UPDATE USERS_PROFILE 
-	SET names = ?, lastNames = ?, alias = ?, password = ?, eMail = ?, phoneNumber = ?, country = ?, home_address = ?
-	WHERE id = ?`
+	SET names = $1, lastNames = $2, alias = $3, password = $4, eMail = $5, phoneNumber = $6, country = $7, home_address = $8
+	WHERE id = $9`
 
 	querydelete_user_Byid = `
 	DELETE FROM USERS_PROFILE 
-	WHERE id = ?`
+	WHERE id = $1`
 
 	queryget_request_status_Byid = `
 	SELECT request_status
-	from REQUEST 
-	WHERE id = ?`
+	FROM REQUEST 
+	WHERE id = $1`
 
 	queryget_status_byid = `
 	SELECT Status
 	FROM REQUEST_TYPES
-	WHERE id = ?`
+	WHERE id = $1`
 
 	queryupdate_request_status_Byid = `
 	UPDATE REQUEST 
-	SET request_status = ?
-	WHERE id = ?`
+	SET request_status = $1
+	WHERE id = $2`
 
 	querydelete_requests_ByUserid = `
 	DELETE FROM REQUEST 
-	WHERE idUser = ?`
+	WHERE idUser = $1`
 
 	querycreate_request = `
 	INSERT INTO REQUEST (idUser, request_status, IAM_URL, PDF_URL, QUOTE_PDF_URL)
-	VALUES (?, 5, ?, ?, ?)`
+	VALUES ($1, 5, ' ', ' ', ' ')`
+
+	queryupdate_request_URL = `
+	UPDATE REQUEST 
+	SET request_status = $1, IAM_URL = $2, PDF_URL = $3, QUOTE_PDF_URL = $4
+	WHERE id = $5`
 
 	querycreate_requesttype = `
 	INSERT INTO REQUEST_TYPES (Status)
-	VALUES (?)`
+	VALUES ($1)`
 
 	queryget_cotizacion_data = `
 	SELECT 
@@ -81,7 +87,7 @@ const (
 	ON 
 		r.idUser = u.id
 	WHERE 
-		r.id = ?;`
+		r.id = $1;`
 )
 
 var (
@@ -162,8 +168,8 @@ func (r *View_struct) Delete_userByid(ctx context.Context, id int) error {
 }
 
 // This function edits the status of a user  it uses the ExcecContext method
-func (r *View_struct) Create_request(ctx context.Context, idUser int, request_status int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string) error {
-	_, err := r.db.ExecContext(ctx, querycreate_request, idUser, request_status, IAM_URL, PDF_URL, QUOTE_PDF_URL)
+func (r *View_struct) Create_request(ctx context.Context, idUser int) error {
+	_, err := r.db.ExecContext(ctx, querycreate_request, idUser)
 	if err != nil {
 		return err
 	}
@@ -194,6 +200,14 @@ func (r *View_struct) Update_request_status_Byid(ctx context.Context, id int, re
 	return nil
 }
 
+func (r *View_struct) Update_request_URL(ctx context.Context, request_status int, IAM_URL string, PDF_URL string, QUOTE_PDF_URL string, id int) error {
+	_, err := r.db.ExecContext(ctx, queryupdate_request_URL, request_status, IAM_URL, PDF_URL, QUOTE_PDF_URL, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *View_struct) Get_request_status_Byid(ctx context.Context, id int) (*models.Request_Status, error) {
 	u := &models.Request_Status{}
 	err := r.db.GetContext(ctx, u, queryget_request_status_Byid, id)
@@ -208,6 +222,7 @@ func (r *View_struct) Get_cotizacion_data(ctx context.Context, id_request int) (
 	u := &models.Get_cotizacion_data{}
 	err := r.db.GetContext(ctx, u, queryget_cotizacion_data, id_request)
 	if err != nil {
+		fmt.Println("Error executing SQL query:", err.Error())
 		return nil, err
 	}
 

@@ -1,8 +1,7 @@
 port: 8080
 database:
-  host: host.docker.internal
-  #host: localhost
-  port: 3306
-  user: CADUN
-  pasword: 2024
-  name: cadun_users_db
+  host: dpg-crcup62j1k6c73cu0lb0-a.ohio-postgres.render.com
+  port: 5432
+  user: cadun_users_db_r3on_user
+  pasword: 3yZ19qokcHXVYc4w48J5wPw5v1GFqxny
+  name: cadun_users_db_r3on

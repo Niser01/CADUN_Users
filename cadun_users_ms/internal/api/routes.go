@@ -21,6 +21,7 @@ func (a *API) RegisterRoutes(e *echo.Echo) {
 	request.GET("/estado_por_id", a.Get_requeststatus_Byid)
 	request.PUT("/actualizar_estado_por_id", a.Update_request_status_Byid)
 	request.DELETE("/borrar_cotizacion_por_id", a.Delete_requests_ByUserid)
+	request.PUT("/actualizar_cotizacion", a.Update_request_URL)
 	request.GET("/obtener_cotizacion", a.Get_cotizacion_data)
 
 	password := e.Group("/password")
