@@ -142,7 +142,7 @@ func (a *API) Update_request_status_Byid(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Update_request_status_Byid(ctx, parametros.RequestStatus, parametros.Id)
+	err = a.view.Update_request_status_Byid(ctx, parametros.Id, parametros.RequestStatus)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -255,4 +255,20 @@ func (a *API) Get_cotizacion_data(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch cotizacion data"})
 	}
 	return c.JSON(http.StatusOK, cotizacion)
+}
+
+func (a *API) Get_requestId_byUserid(c echo.Context) error {
+	ctx := c.Request().Context()
+	parametros := dtos.Get_requestId_byUserid{}
+	err := c.Bind(&parametros)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	requestid, err := a.view.Get_requestId_byUserid(ctx, parametros.UserId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, requestid)
 }

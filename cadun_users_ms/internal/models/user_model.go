@@ -30,7 +30,7 @@ type RequestType struct {
 // Request db model
 type Request struct {
 	ID            int `db:"id"`
-	IDUser        int `db:"idUser"`
+	IDUser        int `db:"iduser"`
 	RequestStatus int `db:"request_status"`
 }
 
@@ -39,7 +39,7 @@ type Request_Status struct {
 }
 
 type Status struct {
-	Status string `db:"Status"`
+	Status string `db:"status"`
 }
 
 type Get_cotizacion_data struct {
@@ -51,4 +51,8 @@ type Get_cotizacion_data struct {
 	IAM_URL       string `db:"iam_url"`
 	PDF_URL       string `db:"pdf_url"`
 	QUOTE_PDF_URL string `db:"quote_pdf_url"`
+}
+
+type Get_requestId_byUserid struct {
+	ID int `db:"id"`
 }

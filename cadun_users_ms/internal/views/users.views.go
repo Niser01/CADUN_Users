@@ -31,7 +31,7 @@ const (
 
 	queryupdate_user_Byid = `
 	UPDATE USERS_PROFILE 
-	SET names = $1, lastNames = $2, alias = $3, password = $4, eMail = $5, phoneNumber = $6, country = $7, home_address = $8
+	SET names = $1, lastNames = $2, alias = $3, password = encode(digest($4, 'sha256'), 'hex'), eMail = $5, phoneNumber = $6, country = $7, home_address = $8
 	WHERE id = $9`
 
 	querydelete_user_Byid = `
@@ -60,6 +60,11 @@ const (
 	querycreate_request = `
 	INSERT INTO REQUEST (idUser, request_status, IAM_URL, PDF_URL, QUOTE_PDF_URL)
 	VALUES ($1, 5, ' ', ' ', ' ')`
+
+	queryget_requestid_byuserid = `
+	SELECT id
+	FROM REQUEST
+	WHERE idUser = $1`
 
 	queryupdate_request_URL = `
 	UPDATE REQUEST 
@@ -193,7 +198,7 @@ func (r *View_struct) Create_requesttype(ctx context.Context, Status string) err
 }
 
 func (r *View_struct) Update_request_status_Byid(ctx context.Context, id int, request_status int) error {
-	_, err := r.db.ExecContext(ctx, queryupdate_request_status_Byid, request_status, id) // Cambié el orden aquí
+	_, err := r.db.ExecContext(ctx, queryupdate_request_status_Byid, request_status, id)
 	if err != nil {
 		return err
 	}
@@ -211,6 +216,16 @@ func (r *View_struct) Update_request_URL(ctx context.Context, request_status int
 func (r *View_struct) Get_request_status_Byid(ctx context.Context, id int) (*models.Request_Status, error) {
 	u := &models.Request_Status{}
 	err := r.db.GetContext(ctx, u, queryget_request_status_Byid, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
+
+func (r *View_struct) Get_requestId_byUserid(ctx context.Context, id int) (*models.Get_requestId_byUserid, error) {
+	u := &models.Get_requestId_byUserid{}
+	err := r.db.GetContext(ctx, u, queryget_requestid_byuserid, id)
 	if err != nil {
 		return nil, err
 	}
