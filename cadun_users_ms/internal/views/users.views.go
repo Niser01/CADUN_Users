@@ -59,7 +59,8 @@ const (
 
 	querycreate_request = `
 	INSERT INTO REQUEST (idUser, request_status, IAM_URL, PDF_URL, QUOTE_PDF_URL)
-	VALUES ($1, 5, ' ', ' ', ' ')`
+	VALUES ($1, 5, ' ', ' ', ' ')
+	RETURNING id`
 
 	queryget_requestid_byuserid = `
 	SELECT id
@@ -172,13 +173,13 @@ func (r *View_struct) Delete_userByid(ctx context.Context, id int) error {
 	return nil
 }
 
-// This function edits the status of a user  it uses the ExcecContext method
-func (r *View_struct) Create_request(ctx context.Context, idUser int) error {
-	_, err := r.db.ExecContext(ctx, querycreate_request, idUser)
+func (r *View_struct) Create_request(ctx context.Context, idUser int) (int, error) {
+	var id int
+	err := r.db.QueryRowContext(ctx, querycreate_request, idUser).Scan(&id)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return id, nil
 }
 
 func (r *View_struct) Delete_requests_ByUserid(ctx context.Context, idUser int) error {
@@ -223,14 +224,17 @@ func (r *View_struct) Get_request_status_Byid(ctx context.Context, id int) (*mod
 	return u, nil
 }
 
-func (r *View_struct) Get_requestId_byUserid(ctx context.Context, id int) (*models.Get_requestId_byUserid, error) {
-	u := &models.Get_requestId_byUserid{}
-	err := r.db.GetContext(ctx, u, queryget_requestid_byuserid, id)
+func (r *View_struct) Get_requestId_byUserid(ctx context.Context, id int) ([]models.Get_requestId_byUserid, error) {
+	var results []models.Get_requestId_byUserid                               // Cambiar a slice de resultados
+	err := r.db.SelectContext(ctx, &results, queryget_requestid_byuserid, id) // Usar SelectContext en lugar de GetContext
 	if err != nil {
 		return nil, err
 	}
 
-	return u, nil
+	// Verificar resultados devueltos
+	fmt.Printf("Resultados obtenidos: %v\n", results) // Agrega esta línea para depurar
+
+	return results, nil
 }
 
 func (r *View_struct) Get_cotizacion_data(ctx context.Context, id_request int) (*models.Get_cotizacion_data, error) {
