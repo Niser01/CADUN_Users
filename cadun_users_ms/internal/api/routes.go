@@ -27,5 +27,4 @@ func (a *API) RegisterRoutes(e *echo.Echo) {
 
 	password := e.Group("/password")
 	password.POST("/RevisarPassword", a.RevisarPassword)
-
 }
